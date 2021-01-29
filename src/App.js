@@ -22,6 +22,16 @@ class App extends Component {
     };
   }
 
+  searchGiphy = async (searchTerm) => {
+    try {
+      const response = await fetch(
+        `https://api.giphy.com/v1/gifs/search?api_key=o7IyuSKkLiR728rSCOE3Pov4refIv10F&q=${searchTerm}&limit=25&offset=0&rating=PG&lang=en`
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {}
+  };
+
   handleChange = (event) => {
     // same thing as const value = event.target.value
     const {value} = event.target;
@@ -39,7 +49,7 @@ class App extends Component {
   handleKeyPress = (event) => {
     const {value} = event.target;
     if (value.length > 2 && event.key === 'Enter') {
-      alert(`search for ${value}`);
+      this.searchGiphy(value);
     }
   };
 
