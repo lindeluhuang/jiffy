@@ -10,7 +10,6 @@ const randomChoice = (arr) => {
 
 const Header = ({clearSearch, hasResults}) => (
   <div className="header grid">
-    {console.log(`has results: ${hasResults}`)}
     {hasResults ? (
       <button>
         <img src={clearButton} onClick={clearSearch} />
@@ -36,6 +35,8 @@ class App extends Component {
       gifs: [],
       loading: false,
     };
+    // create a ref to store the textInput DOM element
+    this.textInput = React.createRef();
   }
 
   searchGiphy = async (searchTerm) => {
@@ -94,6 +95,7 @@ class App extends Component {
       hintText: '',
       gifs: [],
     }));
+    this.textInput.current.focus();
   };
 
   render() {
@@ -113,6 +115,7 @@ class App extends Component {
             onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
             value={searchTerm}
+            ref={this.textInput}
           />
         </div>
         <UserHint {...this.state} />
