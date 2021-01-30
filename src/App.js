@@ -1,5 +1,11 @@
 import React, {Component} from 'react';
 import loader from './images/loader.svg';
+import Gif from './Gif';
+
+const randomChoice = (arr) => {
+  const randIndex = Math.floor(Math.random() * arr.length);
+  return arr[randIndex];
+};
 
 const Header = () => (
   <div className="header grid">
@@ -19,6 +25,8 @@ class App extends Component {
     this.state = {
       searchTerm: '',
       hintText: '',
+      gif: null,
+      gifs: [],
     };
   }
 
@@ -27,8 +35,13 @@ class App extends Component {
       const response = await fetch(
         `https://api.giphy.com/v1/gifs/search?api_key=o7IyuSKkLiR728rSCOE3Pov4refIv10F&q=${searchTerm}&limit=25&offset=0&rating=PG&lang=en`
       );
-      const data = await response.json();
-      console.log(data);
+      const {data} = await response.json();
+      const randomGif = randomChoice(data);
+      this.setState((prevState) => ({
+        ...prevState,
+        gif: randomGif,
+        gifs: [...prevState.gifs, randomGif],
+      }));
     } catch (error) {}
   };
 
@@ -55,11 +68,14 @@ class App extends Component {
 
   render() {
     // just like const searchTerm = this.state.searchTerm
-    const {searchTerm} = this.state;
+    const {searchTerm, gif} = this.state;
     return (
       <div className="page">
         <Header />
         <div className="search grid">
+          {this.state.gifs.map((gif) => (
+            <Gif {...gif} />
+          ))}
           <input
             className="input grid-item"
             placeholder="Type something"
