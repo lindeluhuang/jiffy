@@ -38,6 +38,11 @@ class App extends Component {
         `https://api.giphy.com/v1/gifs/search?api_key=o7IyuSKkLiR728rSCOE3Pov4refIv10F&q=${searchTerm}&limit=25&offset=0&rating=PG&lang=en`
       );
       const {data} = await response.json();
+
+      if (!data.length) {
+        throw `Nothing found for ${searchTerm}`;
+      }
+
       const randomGif = randomChoice(data);
       this.setState((prevState) => ({
         ...prevState,
@@ -45,7 +50,13 @@ class App extends Component {
         gifs: [...prevState.gifs, randomGif],
         loading: false,
       }));
-    } catch (error) {}
+    } catch (error) {
+      this.setState((prevState) => ({
+        ...prevState,
+        loading: false,
+        hintText: error,
+      }));
+    }
   };
 
   handleChange = (event) => {
