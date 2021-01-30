@@ -27,10 +27,12 @@ class App extends Component {
       hintText: '',
       gif: null,
       gifs: [],
+      loading: false,
     };
   }
 
   searchGiphy = async (searchTerm) => {
+    this.setState({loading: true});
     try {
       const response = await fetch(
         `https://api.giphy.com/v1/gifs/search?api_key=o7IyuSKkLiR728rSCOE3Pov4refIv10F&q=${searchTerm}&limit=25&offset=0&rating=PG&lang=en`
@@ -41,6 +43,7 @@ class App extends Component {
         ...prevState,
         gif: randomGif,
         gifs: [...prevState.gifs, randomGif],
+        loading: false,
       }));
     } catch (error) {}
   };
