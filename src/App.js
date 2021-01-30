@@ -1,15 +1,23 @@
 import React, {Component} from 'react';
 import loader from './images/loader.svg';
 import Gif from './Gif';
+import clearButton from './images/close-icon.svg';
 
 const randomChoice = (arr) => {
   const randIndex = Math.floor(Math.random() * arr.length);
   return arr[randIndex];
 };
 
-const Header = () => (
+const Header = ({clearSearch, hasResults}) => (
   <div className="header grid">
-    <h1 className="title">Jiffy All Day Err Day</h1>
+    {console.log(`has results: ${hasResults}`)}
+    {hasResults ? (
+      <button>
+        <img src={clearButton} onClick={clearSearch} />
+      </button>
+    ) : (
+      <h1 className="title">Jiffy All Day Err Day</h1>
+    )}
   </div>
 );
 
@@ -25,7 +33,6 @@ class App extends Component {
     this.state = {
       searchTerm: '',
       hintText: '',
-      gif: null,
       gifs: [],
       loading: false,
     };
@@ -46,9 +53,9 @@ class App extends Component {
       const randomGif = randomChoice(data);
       this.setState((prevState) => ({
         ...prevState,
-        gif: randomGif,
         gifs: [...prevState.gifs, randomGif],
         loading: false,
+        hintText: `Hit enter to see more ${searchTerm}`,
       }));
     } catch (error) {
       this.setState((prevState) => ({
@@ -80,12 +87,22 @@ class App extends Component {
     }
   };
 
+  clearSearch = () => {
+    this.setState((prevState) => ({
+      ...prevState,
+      searchTerm: '',
+      hintText: '',
+      gifs: [],
+    }));
+  };
+
   render() {
     // just like const searchTerm = this.state.searchTerm
-    const {searchTerm, gif} = this.state;
+    const {searchTerm, gifs} = this.state;
+    const hasResults = gifs.length;
     return (
       <div className="page">
-        <Header />
+        <Header clearSearch={this.clearSearch} hasResults={hasResults} />
         <div className="search grid">
           {this.state.gifs.map((gif) => (
             <Gif {...gif} />
